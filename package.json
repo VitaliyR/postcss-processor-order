@@ -1,0 +1,39 @@
+{
+  "name": "postcss-processor-order",
+  "version": "0.0.0",
+  "description": "PostCSS plugin for sorting processors passed to postcss",
+  "keywords": [
+    "postcss",
+    "css",
+    "postcss-plugin",
+    "postcss-order",
+    "postcss-sort-processors"
+  ],
+  "author": "Vitaliy Ribachenko <vit@ribachenko.com>",
+  "license": "MIT",
+  "repository": "VitaliyR/postcss-processor-order",
+  "bugs": {
+    "url": "https://github.com/VitaliyR/postcss-processor-order/issues"
+  },
+  "homepage": "https://github.com/VitaliyR/postcss-processor-order",
+  "dependencies": {
+    "postcss": "^5.2.0"
+  },
+  "devDependencies": {
+    "ava": "^0.16.0",
+    "eslint": "^3.4.0",
+    "eslint-config-postcss": "^2.0.2"
+  },
+  "scripts": {
+    "test": "ava && eslint *.js"
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-postcss/es5",
+    "rules": {
+      "indent": ["error", 2],
+      "space-before-function-paren": ["error", "never"],
+      "max-len": ["error", 100],
+      "no-bitwise": [0]
+    }
+  }
+}
