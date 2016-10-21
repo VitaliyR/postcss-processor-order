@@ -2,23 +2,36 @@ const postcss = require('postcss');
 const test = require('ava');
 const plugin = require('./');
 const pkg = require('./package.json');
+const defaultConfig = require('./config');
 
-const plugins = [];
-const defaultOpts = { order: ['red', 'green', 'blue', 'yellow', 'white'] };
-
-const generatePlugin = (color) => {
-  plugins.push(
-    postcss.plugin(`${color}`, function() {
-      return function(root) {
-        root.walkDecls('color', decl => {
-          decl.value = color;
-        });
-      };
-    })()
-  );
+const shuffle = (a) => {
+  for (let i = a.length; i; i--) {
+    let j = Math.floor(Math.random() * i);
+    [a[i - 1], a[j]] = [a[j], a[i - 1]];
+  }
+  return a;
 };
 
-defaultOpts.order.forEach(generatePlugin);
+const random = (min, max) => {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+};
+
+const generatePlugin = (color) => {
+  return postcss.plugin(`${color}`, function() {
+    return function(root) {
+      root.walkDecls('color', decl => {
+        decl.value = color;
+      });
+    };
+  })();
+};
+
+const generatePlugins = (pluginsNames) => {
+  return pluginsNames.map(pluginName => generatePlugin(pluginName));
+};
+
+const defaultOpts = { order: ['red', 'green', 'blue', 'yellow', 'white'] };
+const plugins = generatePlugins(defaultOpts.order);
 
 function run(t, input, output, opts = { }, processors, cb) {
   processors = processors || [ plugin(opts) ].concat(plugins);
@@ -83,4 +96,33 @@ test('It works correctly', t => {
     order: ['green', 'yellow']
   };
   return run(t, 'div { color: initial; }', 'div { color: white; }', opts);
+});
+
+test('It works in project', t => {
+  const currentPlugins = [plugin()].concat(generatePlugins(defaultConfig.order.slice().reverse()));
+  const initialCSS = 'div { color: initial; }';
+  const resultCSS = 'div { color: stylelint; }';
+  return run(t, initialCSS, resultCSS, defaultConfig, currentPlugins);
+});
+
+test('It works if shuffle it', t => {
+  let currentPlugins = generatePlugins(shuffle(defaultConfig.order.slice()));
+
+  for (let i = 0; i < 5; i++) {
+    currentPlugins.splice(random(0, currentPlugins.length - 1), 0, generatePlugin('plugin-' + i));
+  }
+
+  currentPlugins = [plugin()].concat(currentPlugins);
+
+  let i = currentPlugins.length - 1;
+  let lastPlugin;
+  while (!lastPlugin) {
+    let p = currentPlugins[i--].postcssPlugin;
+    !~defaultConfig.order.indexOf(p) && (lastPlugin = p);
+  }
+
+  const initialCSS = 'div { color: initial; }';
+  const resultCSS = `div { color: ${lastPlugin}; }`;
+
+  return run(t, initialCSS, resultCSS, defaultConfig, currentPlugins);
 });
