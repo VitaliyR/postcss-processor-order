@@ -1,6 +1,6 @@
 {
   "name": "postcss-processor-order",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "PostCSS plugin for sorting processors passed to postcss",
   "keywords": [
     "postcss",
@@ -30,10 +30,21 @@
   "eslintConfig": {
     "extends": "eslint-config-postcss/es5",
     "rules": {
-      "indent": ["error", 2],
-      "space-before-function-paren": ["error", "never"],
-      "max-len": ["error", 100],
-      "no-bitwise": [0]
+      "indent": [
+        "error",
+        2
+      ],
+      "space-before-function-paren": [
+        "error",
+        "never"
+      ],
+      "max-len": [
+        "error",
+        100
+      ],
+      "no-bitwise": [
+        0
+      ]
     }
   }
 }
