@@ -101,7 +101,7 @@ test('It works correctly', t => {
 test('It works in project', t => {
   const currentPlugins = [plugin()].concat(generatePlugins(defaultConfig.order.slice().reverse()));
   const initialCSS = 'div { color: initial; }';
-  const resultCSS = 'div { color: stylelint; }';
+  const resultCSS = 'div { color: csswring; }';
   return run(t, initialCSS, resultCSS, defaultConfig, currentPlugins);
 });
 
